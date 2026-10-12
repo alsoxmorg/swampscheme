@@ -1,0 +1,30 @@
+; Regression coverage for the low-risk R7RS procedure additions.
+(define s (string-copy "abcdef" 1 5))
+(string-fill! s "x" 1 3)
+(define copied (make-string 6 "_"))
+(string-copy! copied 1 "abcdef" 2 5)
+(define copied-vector (vector 0 0 0 0))
+(vector-copy! copied-vector 1 #(7 8 9) 0 2)
+(display
+ (list
+  (list-tail '(1 2 3) 1)
+  (list-copy '(4 5))
+  s
+  (vector->list (vector-copy #(1 2 3 4) 1 3))
+  (vector->list (vector-append #(1 2) #(3 4)))
+  copied
+  (vector->list copied-vector)
+  (symbol->string (string->symbol "hello"))
+  (string-ci=? "Swamp" "sWaMp")
+  (char-ci=? "A" "a")
+  (boolean=? #t #t)
+  (round (log 8 2))
+  (round (asin 1))
+  (round (acos 0))
+  (round (exp 0))
+  (gcd 84 -30 18)
+  (lcm 4 6 10)
+  (finite? 1)
+  (infinite? 1)
+  (nan? 1)))
+(newline)

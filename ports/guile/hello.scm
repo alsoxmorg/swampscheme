@@ -1,0 +1,10 @@
+(use-modules (termbox))
+
+(termbox 'init)
+(termbox 'clear)
+(termbox 'hide-cursor)
+(termbox 'print-at 2 1 TB_WHITE TB_DEFAULT "Hello from Guile + Swamp Termbox2")
+(termbox 'print-at 2 2 TB_GREEN TB_DEFAULT "Press any key to exit")
+(termbox 'present)
+(termbox 'poll-event)
+(termbox 'shutdown)

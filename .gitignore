@@ -1,0 +1,14 @@
+# Build outputs
+swampscheme
+*.o
+*.a
+*.so
+*.so.*
+*.egg
+core
+core.*
+
+# Local/editor files
+*.swp
+*~
+.DS_Store

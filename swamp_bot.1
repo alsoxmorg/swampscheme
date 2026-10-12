@@ -1,0 +1,139 @@
+.TH SWAMP_BOT 1 "September 2026" "swamp_bot" "User Commands"
+.SH NAME
+swamp_bot \- read stdin and reply with one snarky chatbot response
+.SH SYNOPSIS
+\&./swampscheme scripts/swamp_bot.scm
+.br
+\&./swampscheme scripts/bad_bod.scm
+.br
+\&./swampscheme scripts/swamp_bot.scm < message.txt
+.br
+\&./swampscheme scripts/swamp_bot.scm <<< "hello swamp bot"
+.br
+\&./swamp_bot_chat.sh
+.SH DESCRIPTION
+.B swamp_bot
+reads all text from standard input, checks it against simple rules, and prints
+exactly one response.
+.PP
+It is intentionally small: edit the Scheme file, add rules, run it again.
+.PP
+.B scripts/swamp_bot_lib.scm
+contains the response rules.
+.B scripts/swamp_bot.scm
+and
+.B scripts/bad_bod.scm
+are one-shot entrypoints.
+.B scripts/swamp_bot_chat.scm
+is a Scheme chat loop, launched by
+.B swamp_bot_chat.sh.
+When the one-shot bot sees an exit request, it prints the exit response and
+returns status
+.B 86.
+.SH TOPICS
+.B swamp_bot
+now has response buckets for greetings, identity checks, thanks, compliments,
+insults, C, suckless software, Scheme/Lisp resentment, editors, Microsoft and
+Windows 11, literal windows, Linux, FreeBSD, OpenBSD, Stardew Valley,
+Daggerfall, fantasy opinions, math, coding, food, weather, time, commands,
+exit requests, questions, blank input, and general fallback nonsense.
+.SH EXAMPLES
+Send a string directly:
+.PP
+.nf
+\&./swampscheme scripts/swamp_bot.scm <<< "hello swamp bot"
+.fi
+.PP
+Pipe text into it:
+.PP
+.nf
+printf '%s\\n' "what are you?" | ./swampscheme scripts/swamp_bot.scm
+.fi
+.PP
+Read from a file:
+.PP
+.nf
+\&./swampscheme scripts/swamp_bot.scm < message.txt
+.fi
+.PP
+Run it like a tiny chatbot:
+.PP
+.nf
+\&./swamp_bot_chat.sh
+.fi
+.SH EXTENDING
+Open
+.B scripts/swamp_bot_lib.scm
+and edit
+.B swamp-bot-response.
+Rules are checked from top to bottom in a
+.B cond
+form.
+.PP
+Put top-level overrides first when a topic must beat every other response
+bucket:
+.PP
+.nf
+((contains-token-any? text '("aardvark" "aardvarks"))
+ "aardvarks are anteaters with better branding.")
+.fi
+.PP
+Add new keyword responses before the final
+.B else
+rule:
+.PP
+.nf
+((string-contains text "weather")
+ "look outside. swamp bot is not a cloud.")
+
+((string-contains text "name")
+ "my name is swamp bot. unfortunately.")
+
+((string-contains text "joke")
+ "no.")
+.fi
+.PP
+The final
+.B else
+is the fallback response used when no earlier rule matches.
+.SH EXIT STATUS
+.TP
+.B 0
+Normal one-shot response.
+.TP
+.B 86
+The input asked swamp bot to exit, quit, die, shut down, terminate, or halt.
+.SH RANDOM RESPONSES
+To make a response list:
+.PP
+.nf
+(define bad-responses
+  '("interesting. badly done."
+    "swamp bot has considered this and rejected it."
+    "that input had consequences."))
+.fi
+.PP
+Then use Swamp's built-in random helpers:
+.PP
+.nf
+(define (random-choice items)
+  (list-ref items (random-integer (length items))))
+.fi
+.PP
+Use it in the fallback:
+.PP
+.nf
+(else
+ (random-choice bad-responses))
+.fi
+.SH NOTES
+The shell form
+.PP
+.nf
+\&./swampscheme scripts/swamp_bot.scm < "hello swamp bot"
+.fi
+.PP
+means "read from a file named hello swamp bot".
+Use
+.B <<<
+to pass a literal string.
